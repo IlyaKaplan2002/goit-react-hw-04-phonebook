@@ -3,13 +3,9 @@ import { PropTypes } from 'prop-types';
 import { v4 as uuid } from 'uuid';
 import ContactFormStyled from './ContactForm.styled';
 
-const initialState = {
-  name: '',
-  number: '',
-};
-
 const ContactForm = ({ onSubmit }) => {
-  const [state, setState] = useState(initialState);
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
   const nameId = uuid();
   const numberId = uuid();
@@ -17,18 +13,27 @@ const ContactForm = ({ onSubmit }) => {
   const handleChange = e => {
     const { name, value } = e.target;
 
-    setState(prevState => ({ ...prevState, [name]: value }));
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+
+      case 'number':
+        setNumber(value);
+        break;
+
+      default:
+        break;
+    }
   };
 
   const handleSubmit = e => {
     e.preventDefault();
 
-    onSubmit(state);
+    onSubmit({ name, number });
     e.target.reset();
-    setState({
-      name: '',
-      number: '',
-    });
+    setName('');
+    setNumber('');
   };
 
   return (
@@ -36,7 +41,7 @@ const ContactForm = ({ onSubmit }) => {
       <form name="contact" onSubmit={handleSubmit}>
         <label htmlFor={nameId}>Name</label>
         <input
-          value={state.name}
+          value={name}
           onChange={handleChange}
           id={nameId}
           type="text"
@@ -48,7 +53,7 @@ const ContactForm = ({ onSubmit }) => {
 
         <label htmlFor={numberId}>Number</label>
         <input
-          value={state.number}
+          value={number}
           onChange={handleChange}
           id={numberId}
           type="tel"
